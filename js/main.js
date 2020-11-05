@@ -2,13 +2,25 @@ const screenOperation = document.getElementById("screen-operation");
 const screenResult = document.getElementById("screen-result");
 const buttons = document.getElementById("buttons");
 
-const lastValue = () => {
-  //Solamente devuelve el último valor de la operación
+let opeationComplete = false;
+
+//Solamente devuelve el último valor de la operación
+const lastValue = () =>
   screenOperation.textContent.substring(screenOperation.textContent.length - 1);
-};
 
 const writeOperation = (text) => {
   if (screenOperation.textContent == 0) screenOperation.textContent = "";
+
+  if (opeationComplete && isNaN(text)) {
+    screenOperation.textContent = screenResult.textContent;
+    opeationComplete = false;
+  }
+
+  if (opeationComplete && !isNaN(text)) {
+    screenOperation.textContent = "";
+    screenResult.textContent = 0;
+    opeationComplete = false;
+  }
 
   if (isNaN(lastValue()) && isNaN(text)) {
     screenOperation.textContent = screenOperation.textContent.substring(
@@ -22,7 +34,33 @@ const writeOperation = (text) => {
 
 //EVAL es una función que recibe un string, lo evalua y si es una operación matemática, la resuelve.
 const writeResult = () => {
+  if (isNaN(lastValue()))
+    screenOperation.textContent = screenOperation.textContent.substring(
+      0,
+      screenOperation.textContent.length - 1
+    );
+
   screenResult.textContent = eval(screenOperation.textContent);
+  opeationComplete = true;
+};
+
+const changeSing = () => {
+  let lastNumber = "";
+  let position = 0;
+  //Si lo último que tenemos, no es un número...
+  if (!isNaN(lastValue())) {
+    for (let i = screenOperation.textContent.length - 1; i > 0; i--) {
+      if (isNaN(screenOperation.textContent[i])) {
+        position = i + 1;
+        break;
+      }
+    }
+  }
+  lastNumber = screenOperation.textContent.substring(position);
+  screenOperation.textContent = screenOperation.textContent.replace(
+    lastNumber,
+    `(${lastNumber * -1})`
+  );
 };
 
 const resetScreen = () => {
@@ -53,4 +91,19 @@ buttons.addEventListener("click", (e) => {
         break;
     }
   }
+});
+
+// SOCIAL PANEL JS
+const floating_btn = document.querySelector(".floating-btn");
+const close_btn = document.querySelector(".close-btn");
+const social_panel_container = document.querySelector(
+  ".social-panel-container"
+);
+
+floating_btn.addEventListener("click", () => {
+  social_panel_container.classList.toggle("visible");
+});
+
+close_btn.addEventListener("click", () => {
+  social_panel_container.classList.remove("visible");
 });
