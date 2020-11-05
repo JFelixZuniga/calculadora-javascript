@@ -9,7 +9,8 @@ const lastValue = () =>
   screenOperation.textContent.substring(screenOperation.textContent.length - 1);
 
 const writeOperation = (text) => {
-  if (screenOperation.textContent == 0) screenOperation.textContent = "";
+  if (screenOperation.textContent == "0" && text != ".")
+    screenOperation.textContent = "";
 
   if (opeationComplete && isNaN(text)) {
     screenOperation.textContent = screenResult.textContent;
@@ -27,14 +28,14 @@ const writeOperation = (text) => {
       0,
       screenOperation.textContent.length - 1
     );
-  } else {
+  } else if (screenOperation.textContent.length < 26) {
     screenOperation.textContent += text;
   }
 };
 
 //EVAL es una función que recibe un string, lo evalua y si es una operación matemática, la resuelve.
 const writeResult = () => {
-  if (isNaN(lastValue()))
+  if (isNaN(lastValue()) && lastValue() !== ")")
     screenOperation.textContent = screenOperation.textContent.substring(
       0,
       screenOperation.textContent.length - 1
@@ -42,6 +43,11 @@ const writeResult = () => {
 
   screenResult.textContent = eval(screenOperation.textContent);
   opeationComplete = true;
+
+  if (screenResult.textContent.length > 9) {
+    screenResult.style.fontSize = "3rem";
+    screenResult.style.marginTop = "2rem";
+  }
 };
 
 const changeSing = () => {
